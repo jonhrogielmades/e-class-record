@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | E-Class Record System</title>
+    <meta name="description" content="Registration page for the E-Class Record System.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="templatemo-glass-admin-style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="register">
+    <div class="background"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <button class="theme-toggle-float" type="button" data-theme-toggle title="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path><path d="M12 20v2"></path>
+            <path d="M4.93 4.93l1.41 1.41"></path><path d="M17.66 17.66l1.41 1.41"></path>
+            <path d="M2 12h2"></path><path d="M20 12h2"></path>
+            <path d="M6.34 17.66l-1.41 1.41"></path><path d="M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <div class="auth-shell">
+        <div class="auth-grid">
+            <section class="glass-card auth-hero-panel">
+                <span class="eyebrow">Create Account</span>
+                <h1>Set up a teacher or student workspace.</h1>
+                <p>
+                    Registration creates a local profile and immediately opens the matching role-based experience.
+                    Student accounts can be linked to a section, while teacher accounts are prepared for section monitoring,
+                    attendance entry, and grade input.
+                </p>
+                <div class="auth-stat-grid">
+                    <div class="auth-stat">
+                        <strong>Teacher</strong>
+                        <span>Manage class list, attendance, and grading</span>
+                    </div>
+                    <div class="auth-stat">
+                        <strong>Student</strong>
+                        <span>Track section details, records, and grades</span>
+                    </div>
+                </div>
+                <ul class="auth-feature-list">
+                    <li>Browser-only storage for easy capstone setup and demonstration.</li>
+                    <li>Role-specific navigation that follows the provided sitemap.</li>
+                    <li>Responsive UI built on top of the folder's glass-admin CSS design.</li>
+                </ul>
+                <div class="auth-hint">
+                    <strong id="role-helper">Students can be linked to a section and personal record profile immediately after registration.</strong>
+                </div>
+            </section>
+
+            <section class="login-card auth-form-card">
+                <div class="login-header">
+                    <div class="login-logo">EC</div>
+                    <h1 class="login-title">Create Account</h1>
+                    <p class="login-subtitle">Choose a role and prepare your e-class record access.</p>
+                </div>
+
+                <div id="auth-message"></div>
+
+                <form id="register-form">
+                    <div class="form-group">
+                        <label class="form-label" for="fullname">Full Name</label>
+                        <input type="text" id="fullname" class="form-input" placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address</label>
+                        <input type="email" id="email" class="form-input" placeholder="Enter your email">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="role">Role</label>
+                        <select id="role" class="form-input">
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" data-student-only>
+                        <label class="form-label" for="section-id">Section</label>
+                        <select id="section-id" class="form-input"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Contact Number</label>
+                        <input type="text" id="phone" class="form-input" placeholder="Optional contact number">
+                    </div>
+
+                    <div class="form-group" data-student-only>
+                        <label class="form-label" for="guardian">Guardian / Parent</label>
+                        <input type="text" id="guardian" class="form-input" placeholder="Guardian name">
+                    </div>
+
+                    <div class="form-group password-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Create a password">
+                        <button type="button" class="password-toggle" data-password-toggle="password">Show</button>
+                    </div>
+
+                    <div class="form-group password-group">
+                        <label class="form-label" for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" class="form-input" placeholder="Confirm your password">
+                        <button type="button" class="password-toggle" data-password-toggle="confirm-password">Show</button>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </form>
+
+                <div class="divider"><span>ready to continue?</span></div>
+
+                <p class="login-footer">
+                    Already registered? <a href="login.html">Sign in here</a><br>
+                    <a href="index.html">Back to landing page</a>
+                </p>
+            </section>
+        </div>
+
+        <footer class="public-footer">
+            <p>E-Class Record System - Local registration module - <span data-current-year></span></p>
+            <p>New accounts are stored locally and redirected straight into the dashboard.</p>
+        </footer>
+    </div>
+
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/app-store.js"></script>
+    <script src="assets/js/app-ui.js"></script>
+    <script src="assets/js/auth.js"></script>
+</body>
+</html>
