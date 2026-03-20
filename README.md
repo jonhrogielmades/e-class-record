@@ -1,14 +1,14 @@
 # E-Class Record System (Laravel)
 
-This project converts the original static HTML/CSS/JavaScript prototype into a Laravel application with real authentication, database-backed records, seeded demo data, and Blade-rendered teacher/student dashboards.
+This project converts the original static HTML/CSS/JavaScript prototype into a Laravel application with real authentication, database-backed records, and Blade-rendered teacher/student dashboards.
 
 ## Stack
 
 - Laravel 10
-- PHP 8.2
+- PHP 8.2+
 - SQLite
 - Blade templates
-- Vanilla JavaScript for theme toggles, charts, and small UI helpers
+- Vanilla JavaScript for UI helpers
 
 ## Features
 
@@ -19,30 +19,60 @@ This project converts the original static HTML/CSS/JavaScript prototype into a L
 - Student profile CRUD
 - Attendance CRUD
 - Grade CRUD
-- Seeded demo data for presentation and testing
-- Preserved glass-style UI from the original prototype
+- Database-seeded test data for quick functional testing
 
-## Demo Accounts
+## Demo Accounts (Seeded)
 
-- Teacher: `teacher@eclass.local` / `teacher123`
-- Student: `student@eclass.local` / `student123`
+All seeded users use the same password: `password123`
 
-## Setup
+- Professor: `professor@eclass.local` (Prof. Lucia Mendoza)
+- Student: `aira.santos@eclass.local` (Aira Mae Santos, Section A)
+- Student: `john.rivera@eclass.local` (John Paul Rivera, Section B)
 
-1. Make sure PHP 8.2+ is available.
-2. Run migrations and seed the database:
-   `php artisan migrate:fresh --seed`
-3. Start Laravel:
-   `php artisan serve`
-4. Open the app in your browser.
+## Setup After Cloning
+
+Run these commands from the project root:
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+Create the SQLite database file (if it does not exist):
+
+```bash
+type nul > database/database.sqlite
+```
+
+Run migrations and seed the test data:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Start the app:
+
+```bash
+php artisan serve
+```
+
+Open `http://127.0.0.1:8000` and use the seeded accounts above.
+
+## Optional Frontend Dev Command
+
+```bash
+npm install
+npm run dev
+```
 
 ## Tests
 
-Run:
-
-`php artisan test`
+```bash
+php artisan test
+```
 
 ## Notes
 
 - The original frontend prototype is preserved in `legacy-prototype/`.
-- The application is configured to use `database/database.sqlite` by default.
+- The app uses `database/database.sqlite` by default.

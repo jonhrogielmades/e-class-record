@@ -692,11 +692,11 @@ body {
     font-family: "Space Mono", monospace;
 }
 
-.password-group {
+.password-input-wrap {
     position: relative;
 }
 
-.password-group .form-input {
+.password-input-wrap .form-input {
     padding-right: 86px;
 }
 
@@ -706,11 +706,50 @@ body {
     right: 14px;
     transform: translateY(-50%);
     border: none;
+    padding: 0;
+    line-height: 1;
     background: transparent;
     color: var(--text-secondary);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
+}
+
+.auth-setup-alert code {
+    color: inherit;
+    font-family: "Space Mono", monospace;
+}
+select.form-input {
+    color: var(--text-primary);
+    background-color: var(--glass-bg);
+    color-scheme: dark;
+}
+
+select.form-input option,
+select.form-input optgroup {
+    background-color: #172238;
+    color: #f8fafc;
+}
+
+select.form-input option:disabled {
+    color: rgba(248, 250, 252, 0.55);
+}
+
+[data-theme="light"] select.form-input option,
+[data-theme="light"] select.form-input optgroup {
+    background-color: #ffffff;
+    color: #0f172a;
+}
+[data-theme="light"] select.form-input {
+    color-scheme: light;
+}
+
+.section-filter-block {
+    margin-bottom: 24px;
+}
+
+.section-filter-block + .section-grid {
+    margin-top: 24px;
 }
 
 /* ============================================
@@ -1773,3 +1812,6 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+
+

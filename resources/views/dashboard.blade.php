@@ -48,7 +48,7 @@
                 <div class="glass-card glass-card-3d stat-card"><div class="stat-card-inner"><div class="stat-info"><h3>Total Learners</h3><div class="stat-value">{{ $teacherSnapshot['totalStudents'] }}</div><span class="stat-change emerald">Across advisory sections</span></div><div class="stat-icon emerald">T</div></div></div>
                 <div class="glass-card glass-card-3d stat-card"><div class="stat-card-inner"><div class="stat-info"><h3>Grade Average</h3><div class="stat-value">{{ $teacherSnapshot['averageGrade'] }}%</div><span class="stat-change gold">{{ EClassUi::performanceLabel($teacherSnapshot['averageGrade']) }}</span></div><div class="stat-icon gold">G</div></div></div>
                 <div class="glass-card glass-card-3d stat-card"><div class="stat-card-inner"><div class="stat-info"><h3>Attendance Rate</h3><div class="stat-value">{{ $teacherSnapshot['averageAttendanceRate'] }}%</div><span class="stat-change blue">Present + late counted</span></div><div class="stat-icon blue">A</div></div></div>
-                <div class="glass-card glass-card-3d stat-card"><div class="stat-card-inner"><div class="stat-info"><h3>Pending Grades</h3><div class="stat-value">{{ $teacherSnapshot['pendingGrades'] }}</div><span class="stat-change rose">Based on seeded assessments</span></div><div class="stat-icon rose">P</div></div></div>
+                <div class="glass-card glass-card-3d stat-card"><div class="stat-card-inner"><div class="stat-info"><h3>Pending Grades</h3><div class="stat-value">{{ $teacherSnapshot['pendingGrades'] }}</div><span class="stat-change rose">Based on current assessment records</span></div><div class="stat-icon rose">P</div></div></div>
             </section>
 
             <section class="section-grid two-column">
@@ -101,7 +101,7 @@
 
             <section class="section-grid two-column">
                 <article class="glass-card chart-card">
-                    <div class="section-head"><div><h2>Section Average by Class</h2><p>Current section grade averages based on seeded and newly recorded assessments.</p></div></div>
+                    <div class="section-head"><div><h2>Section Average by Class</h2><p>Current section grade averages based on recorded assessments.</p></div></div>
                     <canvas class="chart-canvas" data-chart-type="bar" data-labels="{{ e(json_encode($teacherSnapshot['sections']->map(fn ($summary) => str_replace('Section ', 'S', $summary['section']->name))->values()->all())) }}" data-values="{{ e(json_encode($teacherSnapshot['sections']->pluck('averageGrade')->values()->all())) }}" data-max="100" data-color="#d4a574"></canvas>
                 </article>
                 <article class="glass-card chart-card">
@@ -176,22 +176,8 @@
                     <canvas class="chart-canvas" data-chart-type="bar" data-labels="{{ e(json_encode($studentSnapshot['categoryAverages']->pluck('category')->all())) }}" data-values="{{ e(json_encode($studentSnapshot['categoryAverages']->pluck('average')->all())) }}" data-max="100" data-color="#38bdf8"></canvas>
                 </article>
             </section>
-
-            <section class="glass-card">
-                <div class="section-head"><div><h2>Classmates Snapshot</h2><p>Peer overview inside your assigned section.</p></div></div>
-                <div class="mini-card-grid">
-                    @foreach ($studentSnapshot['classmates']->take(4) as $record)
-                        <article class="mini-summary-card">
-                            <h3>{{ $record['student']->name }}</h3>
-                            <p>{{ $record['student']->focus }}</p>
-                            <div class="recent-session-meta">
-                                <span class="feature-badge">{{ $record['gradeAverage'] }}% average</span>
-                                <span class="feature-badge">{{ $record['attendanceSummary']['rate'] }}% attendance</span>
-                            </div>
-                        </article>
-                    @endforeach
-                </div>
-            </section>
         @endif
     @endif
 @endsection
+
+

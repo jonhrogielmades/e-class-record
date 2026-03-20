@@ -12,7 +12,6 @@ use Illuminate\Support\Collection;
 
 class EClassRecordService
 {
-    public const SEEDED_ASSESSMENT_COUNT = 4;
 
     public function roundValue(float|int $value, int $precision = 1): float
     {
@@ -103,6 +102,10 @@ class EClassRecordService
 
         $studentCount = $roster->count();
         $gradeEntries = $section->grades()->count();
+        $expectedAssessments = (int) $section->grades()
+            ->select('category', 'title', 'max_score')
+            ->distinct()
+            ->count();
 
         return [
             'section' => $section,
@@ -114,7 +117,9 @@ class EClassRecordService
             'attendanceRate' => $studentCount > 0
                 ? $this->roundValue($roster->avg(fn (array $record) => $record['attendanceSummary']['rate']) ?? 0, 1)
                 : 0,
-            'pendingGrades' => max(0, ($studentCount * self::SEEDED_ASSESSMENT_COUNT) - $gradeEntries),
+            'pendingGrades' => $expectedAssessments > 0
+                ? max(0, ($studentCount * $expectedAssessments) - $gradeEntries)
+                : 0,
         ];
     }
 

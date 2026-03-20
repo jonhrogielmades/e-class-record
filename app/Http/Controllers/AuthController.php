@@ -9,18 +9,26 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Throwable;
 
 class AuthController extends Controller
 {
+    private const DEMO_PASSWORD = 'password123';
+
     public function landing(): RedirectResponse|View
     {
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
 
-        return view('landing');
+        return view('landing', [
+            'databaseReady' => $this->hasTables(['users', 'sections', 'student_profiles']),
+            'demoAccounts' => $this->demoAccounts(),
+            'demoPassword' => self::DEMO_PASSWORD,
+        ]);
     }
 
     public function showLogin(): RedirectResponse|View
@@ -29,11 +37,19 @@ class AuthController extends Controller
             return redirect()->route('dashboard');
         }
 
-        return view('auth.login');
+        return view('auth.login', [
+            'databaseReady' => $this->hasTable('users'),
+        ]);
     }
 
     public function login(Request $request): RedirectResponse
     {
+        if (! $this->hasTable('users')) {
+            return back()
+                ->with('error', $this->databaseSetupMessage())
+                ->onlyInput('email');
+        }
+
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
@@ -56,13 +72,25 @@ class AuthController extends Controller
             return redirect()->route('dashboard');
         }
 
+        $hasUsersTable = $this->hasTable('users');
+        $hasSectionsTable = $this->hasTable('sections');
+
         return view('auth.register', [
-            'sections' => Section::query()->orderBy('name')->get(),
+            'databaseReady' => $hasUsersTable && $hasSectionsTable,
+            'sections' => $hasSectionsTable
+                ? Section::query()->orderBy('name')->get()
+                : collect(),
         ]);
     }
 
     public function register(Request $request): RedirectResponse
     {
+        if (! $this->hasTable('users') || ! $this->hasTable('sections')) {
+            return back()
+                ->with('error', $this->databaseSetupMessage())
+                ->withInput($request->except(['password', 'password_confirmation']));
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
@@ -84,8 +112,8 @@ class AuthController extends Controller
                 'password' => $validated['password'],
                 'role' => $validated['role'],
                 'phone' => $validated['phone'] ?? null,
-                'title' => $validated['role'] === User::ROLE_TEACHER ? 'Class Adviser' : null,
-                'department' => $validated['role'] === User::ROLE_TEACHER ? 'BSIT Program' : null,
+                'title' => null,
+                'department' => null,
             ]);
 
             if ($user->isStudent()) {
@@ -97,10 +125,10 @@ class AuthController extends Controller
                     'student_number' => StudentProfile::nextStudentNumber($section),
                     'name' => $user->name,
                     'email' => $user->email,
-                    'guardian' => $validated['guardian'] ?: 'Pending guardian details',
-                    'contact' => $validated['phone'] ?: 'Not provided',
-                    'address' => 'Address not yet provided',
-                    'focus' => 'General Studies',
+                    'guardian' => $validated['guardian'] ?? null,
+                    'contact' => $validated['phone'] ?? null,
+                    'address' => null,
+                    'focus' => null,
                     'status' => 'Regular',
                 ]);
             }
@@ -121,5 +149,54 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login')->with('success', 'You have been logged out.');
+    }
+
+    private function hasTables(array $tables): bool
+    {
+        foreach ($tables as $table) {
+            if (! $this->hasTable($table)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function hasTable(string $table): bool
+    {
+        try {
+            return Schema::hasTable($table);
+        } catch (Throwable) {
+            return false;
+        }
+    }
+
+    private function demoAccounts(): array
+    {
+        if (! $this->hasTables(['users', 'student_profiles', 'sections'])) {
+            return [];
+        }
+
+        return User::query()
+            ->with('studentProfile.section')
+            ->whereIn('role', [User::ROLE_TEACHER, User::ROLE_STUDENT])
+            ->orderByRaw('CASE WHEN role = ? THEN 0 ELSE 1 END', [User::ROLE_TEACHER])
+            ->orderBy('name')
+            ->get()
+            ->map(function (User $user): array {
+                return [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'section' => $user->studentProfile?->section?->name,
+                ];
+            })
+            ->values()
+            ->all();
+    }
+
+    private function databaseSetupMessage(): string
+    {
+        return 'Database is not initialized yet. Run "php artisan migrate --seed" and reload the page.';
     }
 }

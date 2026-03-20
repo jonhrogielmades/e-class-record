@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 class EClassPagesTest extends TestCase
@@ -49,5 +51,36 @@ class EClassPagesTest extends TestCase
         $this->actingAs($student)->get(route('students.index'))->assertOk();
         $this->actingAs($student)->get(route('grades.index'))->assertOk();
         $this->actingAs($student)->get(route('settings.index'))->assertOk();
+    }
+
+    public function test_unknown_login_shows_validation_message(): void
+    {
+        $this->post(route('login.store'), [
+            'email' => 'no-account@eclass.local',
+            'password' => 'invalid-password',
+        ])->assertSessionHasErrors('email');
+    }
+
+    public function test_register_page_handles_missing_sections_table_gracefully(): void
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        Schema::dropIfExists('sections');
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
+        $this->get(route('register'))
+            ->assertOk()
+            ->assertSee('Database setup required');
+    }
+
+    public function test_login_handles_missing_users_table_gracefully(): void
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        Schema::dropIfExists('users');
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
+        $this->post(route('login.store'), [
+            'email' => 'teacher@eclass.local',
+            'password' => 'teacher123',
+        ])->assertSessionHas('error');
     }
 }

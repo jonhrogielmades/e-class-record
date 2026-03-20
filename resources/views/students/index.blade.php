@@ -34,7 +34,7 @@
         @if (empty($activeSummary))
             <section class="glass-card"><div class="empty-state"><div><h3>No section is available for student management</h3><p>Create a class section first, then return here to add learner profiles and attendance records.</p></div></div></section>
         @else
-            <section class="glass-card">
+            <section class="glass-card section-filter-block">
                 <div class="section-head"><div><h2>Section Filter</h2><p>Switch section to manage another set of student and attendance records.</p></div></div>
                 <form method="GET" action="{{ route('students.index') }}" class="form-group-settings section-filter-form">
                     <label for="records-section">Section</label>
@@ -89,7 +89,14 @@
                         @if ($selectedStudent)
                             @method('PUT')
                         @endif
-                        <input type="hidden" name="section_id" value="{{ $activeSummary['section']->id }}">
+                        <div class="form-group-settings full-width">
+                            <label for="student-section">Section</label>
+                            <select id="student-section" name="section_id" class="form-input" required>
+                                @foreach ($sectionSummaries as $summary)
+                                    <option value="{{ $summary['section']->id }}" @selected((string) old('section_id', $selectedStudent->section_id ?? $activeSummary['section']->id) === (string) $summary['section']->id)>{{ $summary['section']->name }} - {{ $summary['section']->strand }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="form-group-settings full-width"><label for="student-name">Full Name</label><input id="student-name" class="form-input" type="text" name="name" value="{{ old('name', $selectedStudent->name ?? '') }}"></div>
                         <div class="form-group-settings"><label for="student-email">Email</label><input id="student-email" class="form-input" type="email" name="email" value="{{ old('email', $selectedStudent->email ?? '') }}"></div>
                         <div class="form-group-settings"><label for="student-number">Student Number</label><input id="student-number" class="form-input" type="text" name="student_number" value="{{ old('student_number', $selectedStudent->student_number ?? '') }}"></div>
@@ -199,7 +206,7 @@
             </section>
 
             <section class="glass-card">
-                <div class="section-head"><div><h2>Attendance Records</h2><p>Your complete attendance history for the currently seeded meetings.</p></div></div>
+                <div class="section-head"><div><h2>Attendance Records</h2><p>Your complete attendance history for the currently recorded meetings.</p></div></div>
                 <div class="table-responsive">
                     <table class="history-table">
                         <thead><tr><th>Date</th><th>Topic</th><th>Status</th><th>Remarks</th></tr></thead>
@@ -219,3 +226,4 @@
         @endif
     @endif
 @endsection
+

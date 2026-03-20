@@ -41,7 +41,7 @@
                 </div>
                 <ul class="auth-feature-list">
                     <li>Glass-admin inspired interface adapted to academic records.</li>
-                    <li>Section A and Section B data are already seeded for fast testing.</li>
+                    <li>Seeded section data is available after running migrations.</li>
                     <li>All records are now stored in Laravel's database for real persistence.</li>
                 </ul>
                 <div class="auth-hint">
@@ -60,6 +60,12 @@
 
                 @include('partials.flash')
 
+                @if (isset($databaseReady) && ! $databaseReady)
+                    <div class="alert alert-warning auth-setup-alert">
+                        Database setup required. Run <code>php artisan migrate --seed</code>.
+                    </div>
+                @endif
+
                 <form method="POST" action="{{ route('login.store') }}">
                     @csrf
                     <div class="form-group">
@@ -69,8 +75,10 @@
 
                     <div class="form-group password-group">
                         <label class="form-label" for="password">Password</label>
-                        <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password">
-                        <button type="button" class="password-toggle" data-password-toggle="password">Show</button>
+                        <div class="password-input-wrap">
+                            <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password">
+                            <button type="button" class="password-toggle" data-password-toggle="password">Show</button>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Sign In</button>
@@ -86,7 +94,10 @@
 
         <footer class="public-footer">
             <p>E-Class Record System - Laravel authentication - <span data-current-year></span></p>
-            <p>Teacher and student demo credentials are included for fast presentation testing.</p>
+            <p>Use the seeded credentials shown on the landing page and README for testing.</p>
         </footer>
     </div>
 @endsection
+
+
+

@@ -72,7 +72,7 @@
                     <div class="site-map-node accent">Dashboard</div>
                     <div class="site-map-branch">
                         <span>Class List</span>
-                        <small>Section A / Section B</small>
+                        <small>Two active sections</small>
                     </div>
                     <div class="site-map-branch">
                         <span>Students</span>
@@ -112,7 +112,7 @@
                 <article class="glass-card feature-card">
                     <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path></svg></div>
                     <h3>Class List</h3>
-                    <p>Section A and Section B views show roster counts, adviser information, schedules, and student performance snapshots.</p>
+                    <p>Section views show roster counts, adviser information, schedules, and student performance snapshots.</p>
                 </article>
                 <article class="glass-card feature-card">
                     <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><path d="M20 8v6"></path><path d="M23 11h-6"></path></svg></div>
@@ -135,9 +135,19 @@
                         </div>
                     </div>
                     <ul class="spotlight-list">
-                        <li><strong>Teacher:</strong> <code>teacher@eclass.local</code> / <code>teacher123</code></li>
-                        <li><strong>Student:</strong> <code>student@eclass.local</code> / <code>student123</code></li>
-                        <li>Demo sections, attendance records, and grades are seeded into the database automatically.</li>
+                        @if (! empty($demoAccounts))
+                            @foreach ($demoAccounts as $account)
+                                <li>
+                                    <strong>{{ ucfirst($account['role']) }}:</strong>
+                                    <code>{{ $account['email'] }}</code> /
+                                    <code>{{ $demoPassword }}</code>
+                                    <span>- {{ $account['name'] }}@if (! empty($account['section'])) ({{ $account['section'] }}) @endif</span>
+                                </li>
+                            @endforeach
+                            <li>All listed accounts are loaded from the database seed data.</li>
+                        @else
+                            <li>No demo accounts found yet. Run <code>php artisan migrate:fresh --seed</code>.</li>
+                        @endif
                     </ul>
                 </article>
                 <article class="glass-card spotlight-card">
@@ -172,7 +182,8 @@
 
         <footer class="public-footer">
             <p>E-Class Record System - Laravel academic record platform - <span data-current-year></span></p>
-            <p>Built with Laravel, Blade, PHP, SQLite, and seeded demo data.</p>
+            <p>Built with Laravel, Blade, PHP, SQLite, and database-backed records.</p>
         </footer>
     </div>
 @endsection
+

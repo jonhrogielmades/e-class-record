@@ -34,7 +34,7 @@
         @if (empty($activeSummary))
             <section class="glass-card"><div class="empty-state"><div><h3>No section is available for grading</h3><p>Create a class section first, then return here to record quizzes, exams, and project scores.</p></div></div></section>
         @else
-            <section class="glass-card">
+            <section class="glass-card section-filter-block">
                 <div class="section-head"><div><h2>Section Filter</h2><p>Switch section to review another gradebook and leaderboard.</p></div></div>
                 <form method="GET" action="{{ route('grades.index') }}" class="form-group-settings section-filter-form">
                     <label for="grading-section-filter">Section</label>

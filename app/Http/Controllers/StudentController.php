@@ -70,17 +70,22 @@ class StudentController extends Controller
 
         $section = $request->user()->sections()->findOrFail($validated['section_id']);
 
-        StudentProfile::create([
+        $studentData = [
             'section_id' => $section->id,
             'student_number' => $validated['student_number'] ?: StudentProfile::nextStudentNumber($section),
             'name' => $validated['name'],
             'email' => strtolower($validated['email']),
-            'guardian' => $validated['guardian'] ?: 'Pending guardian details',
-            'contact' => $validated['contact'] ?: 'Not provided',
-            'address' => $validated['address'] ?: 'Address not yet provided',
-            'focus' => $validated['focus'] ?: 'General Studies',
-            'status' => $validated['status'] ?: 'Regular',
-        ]);
+            'guardian' => $validated['guardian'] ?? null,
+            'contact' => $validated['contact'] ?? null,
+            'address' => $validated['address'] ?? null,
+            'focus' => $validated['focus'] ?? null,
+        ];
+
+        if (! empty($validated['status'])) {
+            $studentData['status'] = $validated['status'];
+        }
+
+        StudentProfile::create($studentData);
 
         return redirect()->route('students.index', ['section' => $section->id])->with('success', 'Student profile created successfully.');
     }
@@ -108,11 +113,11 @@ class StudentController extends Controller
             'student_number' => $validated['student_number'],
             'name' => $validated['name'],
             'email' => strtolower($validated['email']),
-            'guardian' => $validated['guardian'] ?: 'Pending guardian details',
-            'contact' => $validated['contact'] ?: 'Not provided',
-            'address' => $validated['address'] ?: 'Address not yet provided',
-            'focus' => $validated['focus'] ?: 'General Studies',
-            'status' => $validated['status'] ?: 'Regular',
+            'guardian' => $validated['guardian'] ?? null,
+            'contact' => $validated['contact'] ?? null,
+            'address' => $validated['address'] ?? null,
+            'focus' => $validated['focus'] ?? null,
+            'status' => $validated['status'] ?: $student->status,
         ]);
 
         if ($student->user) {

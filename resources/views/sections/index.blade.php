@@ -59,7 +59,7 @@
                 <div class="glass-card stat-card"><div class="stat-card-inner"><div class="stat-info"><h3>Enrolled Learners</h3><div class="stat-value">{{ $activeSummary['studentCount'] }}</div><span class="stat-change emerald">Class roster size</span></div><div class="stat-icon emerald">L</div></div></div>
                 <div class="glass-card stat-card"><div class="stat-card-inner"><div class="stat-info"><h3>Section Average</h3><div class="stat-value">{{ $activeSummary['averageGrade'] }}%</div><span class="stat-change gold">{{ EClassUi::performanceLabel($activeSummary['averageGrade']) }}</span></div><div class="stat-icon gold">G</div></div></div>
                 <div class="glass-card stat-card"><div class="stat-card-inner"><div class="stat-info"><h3>Attendance Rate</h3><div class="stat-value">{{ $activeSummary['attendanceRate'] }}%</div><span class="stat-change blue">Present + late counted</span></div><div class="stat-icon blue">A</div></div></div>
-                <div class="glass-card stat-card"><div class="stat-card-inner"><div class="stat-info"><h3>Pending Grades</h3><div class="stat-value">{{ $activeSummary['pendingGrades'] }}</div><span class="stat-change rose">Seeded checklist gap</span></div><div class="stat-icon rose">P</div></div></div>
+                <div class="glass-card stat-card"><div class="stat-card-inner"><div class="stat-info"><h3>Pending Grades</h3><div class="stat-value">{{ $activeSummary['pendingGrades'] }}</div><span class="stat-change rose">Assessment checklist gap</span></div><div class="stat-icon rose">P</div></div></div>
             </section>
 
             <section class="section-grid two-column">
@@ -147,7 +147,7 @@
                     </ul>
                 </article>
                 <article class="glass-card">
-                    <div class="section-head"><div><h2>Class Snapshot</h2><p>Your current class overview based on the seeded section roster.</p></div></div>
+                    <div class="section-head"><div><h2>Class Snapshot</h2><p>Your current class overview based on your section roster.</p></div></div>
                     <div class="roster-grid">
                         @foreach (collect([$studentSnapshot])->concat($studentSnapshot['classmates']) as $record)
                             <article class="student-card">
@@ -171,3 +171,4 @@
         @endif
     @endif
 @endsection
+

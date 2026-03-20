@@ -59,6 +59,12 @@
 
                 @include('partials.flash')
 
+                @if (isset($databaseReady) && ! $databaseReady)
+                    <div class="alert alert-warning auth-setup-alert">
+                        Database setup required. Run <code>php artisan migrate --seed</code>.
+                    </div>
+                @endif
+
                 <form method="POST" action="{{ route('register.store') }}" id="register-form">
                     @csrf
                     <div class="form-group">
@@ -103,14 +109,18 @@
 
                     <div class="form-group password-group">
                         <label class="form-label" for="password">Password</label>
-                        <input type="password" id="password" name="password" class="form-input" placeholder="Create a password">
-                        <button type="button" class="password-toggle" data-password-toggle="password">Show</button>
+                        <div class="password-input-wrap">
+                            <input type="password" id="password" name="password" class="form-input" placeholder="Create a password">
+                            <button type="button" class="password-toggle" data-password-toggle="password">Show</button>
+                        </div>
                     </div>
 
                     <div class="form-group password-group">
                         <label class="form-label" for="password_confirmation">Confirm Password</label>
-                        <input type="password" id="password_confirmation" name="password_confirmation" class="form-input" placeholder="Confirm your password">
-                        <button type="button" class="password-toggle" data-password-toggle="password_confirmation">Show</button>
+                        <div class="password-input-wrap">
+                            <input type="password" id="password_confirmation" name="password_confirmation" class="form-input" placeholder="Confirm your password">
+                            <button type="button" class="password-toggle" data-password-toggle="password_confirmation">Show</button>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Create Account</button>
@@ -131,3 +141,4 @@
         </footer>
     </div>
 @endsection
+

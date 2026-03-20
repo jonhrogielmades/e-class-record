@@ -38,8 +38,8 @@ class SettingsController extends Controller
 
             $user->update([
                 'name' => $validated['name'],
-                'department' => $validated['department'] ?: 'BSIT Program',
-                'phone' => $validated['phone'],
+                'department' => $validated['department'] ?? null,
+                'phone' => $validated['phone'] ?? null,
             ]);
 
             return back()->with('success', 'Settings updated successfully.');
@@ -54,14 +54,14 @@ class SettingsController extends Controller
         DB::transaction(function () use ($user, $validated) {
             $user->update([
                 'name' => $validated['name'],
-                'phone' => $validated['phone'],
+                'phone' => $validated['phone'] ?? null,
             ]);
 
             if ($user->studentProfile) {
                 $user->studentProfile->update([
                     'name' => $validated['name'],
-                    'guardian' => $validated['guardian'] ?: 'Pending guardian details',
-                    'contact' => $validated['phone'] ?: 'Not provided',
+                    'guardian' => $validated['guardian'] ?? null,
+                    'contact' => $validated['phone'] ?? null,
                 ]);
             }
         });
