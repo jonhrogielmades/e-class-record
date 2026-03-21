@@ -6,7 +6,7 @@ This project converts the original static HTML/CSS/JavaScript prototype into a L
 
 - Laravel 10
 - PHP 8.2+
-- SQLite
+- MySQL
 - Blade templates
 - Vanilla JavaScript for UI helpers
 
@@ -39,10 +39,21 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Create the SQLite database file (if it does not exist):
+Create the MySQL database:
 
 ```bash
-type nul > database/database.sqlite
+mysql -u root -e "CREATE DATABASE IF NOT EXISTS e_class_record CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+```
+
+Set your database values in `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=e_class_record
+DB_USERNAME=root
+DB_PASSWORD=
 ```
 
 Run migrations and seed the test data:
@@ -75,4 +86,4 @@ php artisan test
 ## Notes
 
 - The original frontend prototype is preserved in `legacy-prototype/`.
-- The app uses `database/database.sqlite` by default.
+- The app is configured for MySQL via `.env`.
