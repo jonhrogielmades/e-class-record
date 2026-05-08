@@ -16,7 +16,11 @@ class EClassUi
 
     public static function roleLabel(?string $role): string
     {
-        return $role === 'teacher' ? 'Teacher' : 'Student';
+        return match ($role) {
+            'teacher' => 'Teacher',
+            'admin' => 'Administrator',
+            default => 'Student',
+        };
     }
 
     public static function performanceLabel(float|int $percentage): string

@@ -15,6 +15,7 @@
                 </div>
             </div>
             <div class="public-nav-links">
+                <a href="{{ route('guardian.index') }}" class="btn btn-outline btn-fit">Guardian View</a>
                 <a href="{{ route('login') }}" class="btn btn-outline btn-fit">Login</a>
                 <a href="{{ route('register') }}" class="btn btn-primary btn-fit">Register</a>
                 <button class="nav-btn" type="button" data-theme-toggle title="Toggle theme">
@@ -34,15 +35,16 @@
 
         <section class="landing-hero">
             <article class="glass-card hero-copy">
-                <span class="eyebrow">Laravel Conversion</span>
-                <h2>Track class lists, attendance, and grades in one glass-style workspace.</h2>
+                <span class="eyebrow">Academic Records</span>
+                <h2>Track class lists, attendance, and grades in one organized workspace.</h2>
                 <p>
-                    This version keeps the original prototype flow, but now runs on Laravel with real authentication,
-                    database-backed records, and teacher and student dashboards powered by PHP instead of localStorage.
+                    E-Class Record System gives teachers and students a focused Laravel workspace with real authentication,
+                    MySQL-backed records, and role-based dashboards for everyday academic tracking.
                 </p>
                 <div class="hero-actions">
                     <a href="{{ route('login') }}" class="btn btn-primary btn-fit">Open Login</a>
                     <a href="{{ route('register') }}" class="btn btn-outline btn-fit">Create Account</a>
+                    <a href="{{ route('guardian.index') }}" class="btn btn-outline btn-fit">Guardian View</a>
                 </div>
                 <div class="metric-strip">
                     <div class="metric-pill">
@@ -154,7 +156,7 @@
                     <div class="section-head">
                         <div>
                             <h3>Design Direction</h3>
-                            <p>The layout preserves the original glass-admin visual language while upgrading the project into Laravel.</p>
+                            <p>The interface uses a cleaner academic workspace style with clear navigation, compact records, and MySQL-backed workflows.</p>
                         </div>
                     </div>
                     <div class="category-pill-grid">
@@ -163,7 +165,7 @@
                         <div class="category-pill">Section CRUD</div>
                         <div class="category-pill">Attendance Tables</div>
                         <div class="category-pill">Grade Summaries</div>
-                        <div class="category-pill">Responsive Layout</div>
+                        <div class="category-pill">Reports and API</div>
                     </div>
                 </article>
             </section>
@@ -182,8 +184,7 @@
 
         <footer class="public-footer">
             <p>E-Class Record System - Laravel academic record platform - <span data-current-year></span></p>
-            <p>Built with Laravel, Blade, PHP, SQLite, and database-backed records.</p>
+            <p>Built with Laravel, Blade, PHP, MySQL, and database-backed records.</p>
         </footer>
     </div>
 @endsection
-

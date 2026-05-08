@@ -17,6 +17,8 @@ class User extends Authenticatable
 
     public const ROLE_STUDENT = 'student';
 
+    public const ROLE_ADMIN = 'admin';
+
     protected $fillable = [
         'name',
         'email',
@@ -57,6 +59,11 @@ class User extends Authenticatable
         return $this->hasMany(Grade::class, 'recorded_by');
     }
 
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(AppNotification::class);
+    }
+
     public function isTeacher(): bool
     {
         return $this->role === self::ROLE_TEACHER;
@@ -65,5 +72,10 @@ class User extends Authenticatable
     public function isStudent(): bool
     {
         return $this->role === self::ROLE_STUDENT;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
     }
 }

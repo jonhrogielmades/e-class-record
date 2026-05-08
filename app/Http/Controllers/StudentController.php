@@ -34,13 +34,37 @@ class StudentController extends Controller
         $selectedStudent = null;
         $selectedAttendance = null;
         $attendanceRecords = collect();
+        $filteredRoster = collect();
+        $studentSearch = trim((string) $request->query('search'));
 
         if ($activeSummary) {
             $section = $activeSummary['section'];
             $selectedStudent = $section->students()->whereKey($request->query('student'))->first();
-            $attendanceRecords = $this->service->decorateAttendances(
-                $section->attendanceRecords()->with(['student', 'section'])->orderByDesc('date')->get()
-            );
+            $filteredRoster = $activeSummary['roster']
+                ->filter(function (array $record) use ($studentSearch) {
+                    if ($studentSearch === '') {
+                        return true;
+                    }
+
+                    return str_contains(strtolower($record['student']->name), strtolower($studentSearch))
+                        || str_contains(strtolower($record['student']->student_number), strtolower($studentSearch));
+                })
+                ->values();
+            $attendanceQuery = $section->attendanceRecords()->with(['student', 'section'])->orderByDesc('date');
+
+            if ($request->filled('status')) {
+                $attendanceQuery->where('status', $request->query('status'));
+            }
+
+            if ($request->filled('date_from')) {
+                $attendanceQuery->whereDate('date', '>=', $request->query('date_from'));
+            }
+
+            if ($request->filled('date_to')) {
+                $attendanceQuery->whereDate('date', '<=', $request->query('date_to'));
+            }
+
+            $attendanceRecords = $this->service->decorateAttendances($attendanceQuery->get());
             $selectedAttendance = $section->attendanceRecords()->with(['student', 'section'])->whereKey($request->query('attendance'))->first();
         }
 
@@ -49,6 +73,8 @@ class StudentController extends Controller
             'sectionSummaries' => $sectionSummaries,
             'activeSummary' => $activeSummary,
             'selectedStudent' => $selectedStudent,
+            'filteredRoster' => $filteredRoster,
+            'studentSearch' => $studentSearch,
             'attendanceRecords' => $attendanceRecords,
             'selectedAttendance' => $selectedAttendance,
         ]);

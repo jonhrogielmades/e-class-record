@@ -46,9 +46,19 @@
                 </form>
             </section>
 
+            <section class="glass-card section-filter-block">
+                <div class="section-head"><div><h2>Search and Filters</h2><p>Filter grade records by learner, student number, assessment title, or category.</p></div></div>
+                <form method="GET" action="{{ route('grades.index') }}" class="form-grid">
+                    <input type="hidden" name="section" value="{{ $activeSummary['section']->id }}">
+                    <div class="form-group-settings"><label for="grade-search">Search</label><input id="grade-search" class="form-input" name="search" value="{{ request('search') }}" placeholder="Learner or assessment"></div>
+                    <div class="form-group-settings"><label for="grade-category-filter">Category</label><select id="grade-category-filter" class="form-input" name="category"><option value="">All categories</option><option value="Quiz" @selected(request('category') === 'Quiz')>Quiz</option><option value="Exam" @selected(request('category') === 'Exam')>Exam</option><option value="Project" @selected(request('category') === 'Project')>Project</option><option value="Performance Task" @selected(request('category') === 'Performance Task')>Performance Task</option></select></div>
+                    <div class="btn-group no-print"><button type="submit" class="btn btn-primary btn-fit">Apply Filters</button><a href="{{ route('grades.index', ['section' => $activeSummary['section']->id]) }}" class="btn btn-outline btn-fit">Clear</a></div>
+                </form>
+            </section>
+
             <section class="section-grid two-column">
                 <article class="glass-card">
-                    <div class="section-head"><div><h2>{{ $selectedGrade ? 'Edit Grade' : 'Create Grade' }}</h2><p>Use full CRUD controls for assessments in the current section.</p></div></div>
+                    <div class="section-head"><div><h2>{{ $selectedGrade ? 'Edit Grade' : 'Create Grade' }}</h2><p>Record and update assessments for the current section.</p></div></div>
                     <form method="POST" action="{{ $selectedGrade ? route('grades.update', $selectedGrade) : route('grades.store') }}" class="form-grid">
                         @csrf
                         @if ($selectedGrade)

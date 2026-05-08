@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppNotification;
 use App\Models\AttendanceRecord;
 use App\Models\StudentProfile;
 use Illuminate\Http\RedirectResponse;
@@ -24,7 +25,7 @@ class AttendanceController extends Controller
         $section = $request->user()->sections()->findOrFail($validated['section_id']);
         $student = StudentProfile::query()->whereKey($validated['student_profile_id'])->where('section_id', $section->id)->firstOrFail();
 
-        AttendanceRecord::updateOrCreate(
+        $attendance = AttendanceRecord::updateOrCreate(
             [
                 'student_profile_id' => $student->id,
                 'date' => $validated['date'],
@@ -37,6 +38,11 @@ class AttendanceController extends Controller
                 'remarks' => $validated['remarks'],
             ]
         );
+
+        $this->notifyStudent($student, 'Attendance recorded', "{$attendance->topic}: ".ucfirst($attendance->status), 'attendance', [
+            'attendance_id' => $attendance->id,
+            'section_id' => $section->id,
+        ]);
 
         return redirect()->route('students.index', ['section' => $section->id])->with('success', 'Attendance record saved successfully.');
     }
@@ -67,6 +73,11 @@ class AttendanceController extends Controller
             'remarks' => $validated['remarks'],
         ]);
 
+        $this->notifyStudent($student, 'Attendance updated', "{$attendance->topic}: ".ucfirst($attendance->status), 'attendance', [
+            'attendance_id' => $attendance->id,
+            'section_id' => $section->id,
+        ]);
+
         return redirect()->route('students.index', ['section' => $section->id, 'attendance' => $attendance->id])->with('success', 'Attendance record updated successfully.');
     }
 
@@ -83,5 +94,20 @@ class AttendanceController extends Controller
     private function ensureTeacherOwnsAttendance(Request $request, AttendanceRecord $attendance): void
     {
         abort_unless($attendance->section && $attendance->section->teacher_id === $request->user()->id, 403);
+    }
+
+    private function notifyStudent(StudentProfile $student, string $title, string $message, string $type, array $data): void
+    {
+        if (! $student->user) {
+            return;
+        }
+
+        AppNotification::create([
+            'user_id' => $student->user->id,
+            'title' => $title,
+            'message' => $message,
+            'type' => $type,
+            'data' => $data,
+        ]);
     }
 }

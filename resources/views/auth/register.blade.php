@@ -43,7 +43,7 @@
                 <ul class="auth-feature-list">
                     <li>Real Laravel session authentication and persistent database records.</li>
                     <li>Role-specific navigation that follows the provided sitemap.</li>
-                    <li>Responsive UI built on top of the original glass-admin design.</li>
+                    <li>Responsive UI tuned for everyday academic record work.</li>
                 </ul>
                 <div class="auth-hint">
                     <strong id="role-helper">Students can be linked to a section and personal record profile immediately after registration.</strong>
@@ -141,4 +141,3 @@
         </footer>
     </div>
 @endsection
-

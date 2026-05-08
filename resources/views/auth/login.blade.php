@@ -40,14 +40,32 @@
                     </div>
                 </div>
                 <ul class="auth-feature-list">
-                    <li>Glass-admin inspired interface adapted to academic records.</li>
+                    <li>Focused navigation for teacher and student record workflows.</li>
                     <li>Seeded section data is available after running migrations.</li>
-                    <li>All records are now stored in Laravel's database for real persistence.</li>
+                    <li>All records are stored in MySQL through Laravel models.</li>
                 </ul>
                 <div class="auth-hint">
-                    <strong>Load a prepared teacher or student account on the left side.</strong>
+                    <strong>Use a prepared account for testing.</strong>
                     <div class="button-row">
-                          </div>
+                        @forelse ($demoAccounts as $account)
+                            <button
+                                type="button"
+                                class="btn btn-outline btn-fit btn-xs"
+                                data-demo-email="{{ $account['email'] }}"
+                                data-demo-password="{{ $demoPassword }}"
+                            >
+                                @if ($account['role'] === 'admin')
+                                    Admin Demo
+                                @elseif ($account['role'] === 'teacher')
+                                    Teacher Demo
+                                @else
+                                    {{ ($account['section'] ?? 'Student') . ' Demo' }}
+                                @endif
+                            </button>
+                        @empty
+                            <span class="small-text muted">Run migrations and seed data to load demo accounts.</span>
+                        @endforelse
+                    </div>
                 </div>
             </section>
 
@@ -87,6 +105,7 @@
                 <div class="divider"><span>Create accounts</span></div>
                 <p class="login-footer">
                     Need a new account? <a href="{{ route('register') }}">Create one here</a><br>
+                    <a href="{{ route('guardian.index') }}">Open guardian view</a><br>
                     <a href="{{ route('landing') }}">Back to landing page</a>
                 </p>
             </section>
@@ -98,6 +117,3 @@
         </footer>
     </div>
 @endsection
-
-
-

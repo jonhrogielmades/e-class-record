@@ -2,7 +2,7 @@
     'use strict';
 
     const THEME_KEY = 'eclass_theme';
-    const DEFAULT_THEME = 'dark';
+    const DEFAULT_THEME = 'light';
     let resizeTimer = null;
 
     function getTheme() {

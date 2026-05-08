@@ -3,10 +3,14 @@
 
 @section('active_page', 'settings')
 @section('page_title', 'Settings')
-@section('page_subtitle', $user->isTeacher() ? 'Update your teacher profile and use settings as the home for profile details and logout actions.' : 'Update your student profile details and use settings as the place for profile and logout actions.')
+@section('page_subtitle', $user->isAdmin() ? 'Update your administrator profile and account details.' : ($user->isTeacher() ? 'Update your teacher profile and use settings as the home for profile details and logout actions.' : 'Update your student profile details and use settings as the place for profile and logout actions.'))
 
 @section('header_meta')
-    @if ($user->isTeacher())
+    @if ($user->isAdmin())
+        <span class="status-pill">{{ EClassUi::roleLabel($user->role) }}</span>
+        <span class="status-pill">{{ optional($user->created_at)->format('M j, Y') }}</span>
+        <span class="status-pill">{{ $user->department ?: 'System Admin' }}</span>
+    @elseif ($user->isTeacher())
         <span class="status-pill">{{ EClassUi::roleLabel($user->role) }}</span>
         <span class="status-pill">{{ optional($user->created_at)->format('M j, Y') }}</span>
         <span class="status-pill">{{ $user->department ?: 'Not set' }}</span>
@@ -28,7 +32,32 @@
 @endsection
 
 @section('content')
-    @if ($user->isTeacher())
+    @if ($user->isAdmin())
+        <section class="profile-grid">
+            <article class="glass-card profile-summary-card">
+                <div class="profile-header"><div class="profile-avatar">{{ EClassUi::initials($user->name) }}</div><div><h2>{{ $user->name }}</h2><p>{{ $user->email }}</p><span class="status-pill good">{{ EClassUi::roleLabel($user->role) }}</span></div></div>
+                <ul class="detail-list">
+                    <li><strong>Department:</strong> {{ $user->department ?: 'System Administration' }}</li>
+                    <li><strong>Contact Number:</strong> {{ $user->phone ?: 'Not provided' }}</li>
+                    <li><strong>Joined Date:</strong> {{ optional($user->created_at)->format('M j, Y') }}</li>
+                </ul>
+                <div class="profile-note"><strong>Admin Note:</strong> Use the Admin Panel to manage teachers, students, sections, and API/demo readiness.</div>
+            </article>
+            <article class="glass-card">
+                <div class="section-head"><div><h2>Admin Settings</h2><p>Edit your administrator information. Account role is read-only.</p></div></div>
+                <form method="POST" action="{{ route('settings.update') }}" class="form-grid">
+                    @csrf
+                    @method('PUT')
+                    <div class="form-group-settings full-width"><label for="settings-name">Full Name</label><input id="settings-name" class="form-input" type="text" name="name" value="{{ old('name', $user->name) }}"></div>
+                    <div class="form-group-settings"><label>Email Address</label><div class="readonly-field">{{ $user->email }}</div></div>
+                    <div class="form-group-settings"><label>Role</label><div class="readonly-field">{{ EClassUi::roleLabel($user->role) }}</div></div>
+                    <div class="form-group-settings"><label for="settings-department">Department</label><input id="settings-department" class="form-input" type="text" name="department" value="{{ old('department', $user->department) }}"></div>
+                    <div class="form-group-settings"><label for="settings-phone">Contact Number</label><input id="settings-phone" class="form-input" type="text" name="phone" value="{{ old('phone', $user->phone) }}"></div>
+                    <div class="btn-group no-print"><button type="submit" class="btn btn-primary btn-fit">Save Changes</button></div>
+                </form>
+            </article>
+        </section>
+    @elseif ($user->isTeacher())
         <section class="profile-grid">
             <article class="glass-card profile-summary-card">
                 <div class="profile-header"><div class="profile-avatar">{{ EClassUi::initials($user->name) }}</div><div><h2>{{ $user->name }}</h2><p>{{ $user->email }}</p><span class="status-pill good">{{ EClassUi::roleLabel($user->role) }}</span></div></div>
@@ -37,7 +66,7 @@
                     <li><strong>Contact Number:</strong> {{ $user->phone ?: 'Not provided' }}</li>
                     <li><strong>Joined Date:</strong> {{ optional($user->created_at)->format('M j, Y') }}</li>
                 </ul>
-                <div class="profile-note"><strong>Teacher Note:</strong> Use this page to update your profile while keeping the teacher workflow inside the same glass-style shell.</div>
+                <div class="profile-note"><strong>Teacher Note:</strong> Use this page to update your profile while keeping the teacher workflow in one workspace.</div>
             </article>
             <article class="glass-card">
                 <div class="section-head"><div><h2>Profile Settings</h2><p>Edit your teacher information. Account role is read-only.</p></div></div>
@@ -96,5 +125,3 @@
         @endif
     @endif
 @endsection
-
-

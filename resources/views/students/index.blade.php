@@ -3,7 +3,7 @@
 
 @section('active_page', 'students')
 @section('page_title', $user->isTeacher() ? 'Students' : 'My Records')
-@section('page_subtitle', $user->isTeacher() ? 'Manage learner profiles and full attendance CRUD operations for the selected class section.' : 'Review your profile details and personal attendance history stored inside the class record system.')
+@section('page_subtitle', $user->isTeacher() ? 'Manage learner profiles and attendance records for the selected class section.' : 'Review your profile details and personal attendance history stored inside the class record system.')
 
 @section('header_meta')
     @if ($user->isTeacher() && $activeSummary)
@@ -46,11 +46,23 @@
                 </form>
             </section>
 
+            <section class="glass-card section-filter-block">
+                <div class="section-head"><div><h2>Search and Filters</h2><p>Find learners or narrow attendance records by status and date range.</p></div></div>
+                <form method="GET" action="{{ route('students.index') }}" class="form-grid">
+                    <input type="hidden" name="section" value="{{ $activeSummary['section']->id }}">
+                    <div class="form-group-settings"><label for="student-search">Learner Search</label><input id="student-search" class="form-input" name="search" value="{{ request('search') }}" placeholder="Name or student number"></div>
+                    <div class="form-group-settings"><label for="attendance-status-filter">Attendance Status</label><select id="attendance-status-filter" name="status" class="form-input"><option value="">All statuses</option><option value="present" @selected(request('status') === 'present')>Present</option><option value="late" @selected(request('status') === 'late')>Late</option><option value="absent" @selected(request('status') === 'absent')>Absent</option></select></div>
+                    <div class="form-group-settings"><label for="date-from">From</label><input id="date-from" class="form-input" type="date" name="date_from" value="{{ request('date_from') }}"></div>
+                    <div class="form-group-settings"><label for="date-to">To</label><input id="date-to" class="form-input" type="date" name="date_to" value="{{ request('date_to') }}"></div>
+                    <div class="btn-group no-print"><button type="submit" class="btn btn-primary btn-fit">Apply Filters</button><a href="{{ route('students.index', ['section' => $activeSummary['section']->id]) }}" class="btn btn-outline btn-fit">Clear</a></div>
+                </form>
+            </section>
+
             <section class="section-grid two-column">
                 <article class="glass-card">
                     <div class="section-head"><div><h2>Student Profiles</h2><p>Teacher-side student record CRUD for the current section.</p></div></div>
                     <div class="roster-grid">
-                        @forelse ($activeSummary['roster'] as $record)
+                        @forelse ($filteredRoster as $record)
                             <article class="student-card">
                                 <div class="student-card-head">
                                     <div class="profile-avatar">{{ EClassUi::initials($record['student']->name) }}</div>
@@ -226,4 +238,3 @@
         @endif
     @endif
 @endsection
-

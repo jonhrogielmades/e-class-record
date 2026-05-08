@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppNotification;
 use App\Models\Grade;
 use App\Models\StudentProfile;
 use App\Services\EClassRecordService;
@@ -36,9 +37,24 @@ class GradeController extends Controller
 
         if ($activeSummary) {
             $section = $activeSummary['section'];
-            $gradeRecords = $this->service->decorateGrades(
-                $section->grades()->with(['student', 'section'])->orderByDesc('recorded_at')->get()
-            );
+            $gradeQuery = $section->grades()->with(['student', 'section'])->orderByDesc('recorded_at');
+
+            if ($request->filled('category')) {
+                $gradeQuery->where('category', $request->query('category'));
+            }
+
+            if ($request->filled('search')) {
+                $search = trim((string) $request->query('search'));
+                $gradeQuery->where(function ($query) use ($search) {
+                    $query->where('title', 'like', "%{$search}%")
+                        ->orWhereHas('student', function ($studentQuery) use ($search) {
+                            $studentQuery->where('name', 'like', "%{$search}%")
+                                ->orWhere('student_number', 'like', "%{$search}%");
+                        });
+                });
+            }
+
+            $gradeRecords = $this->service->decorateGrades($gradeQuery->get());
             $selectedGrade = $section->grades()->with(['student', 'section'])->whereKey($request->query('grade'))->first();
         }
 
@@ -70,7 +86,7 @@ class GradeController extends Controller
         $section = $request->user()->sections()->findOrFail($validated['section_id']);
         $student = StudentProfile::query()->whereKey($validated['student_profile_id'])->where('section_id', $section->id)->firstOrFail();
 
-        Grade::create([
+        $grade = Grade::create([
             'student_profile_id' => $student->id,
             'section_id' => $section->id,
             'recorded_by' => $request->user()->id,
@@ -80,6 +96,11 @@ class GradeController extends Controller
             'max_score' => $validated['max_score'],
             'remarks' => $validated['remarks'],
             'recorded_at' => now(),
+        ]);
+
+        $this->notifyStudent($student, 'New grade recorded', "{$grade->title}: {$grade->score}/{$grade->max_score}", 'grade', [
+            'grade_id' => $grade->id,
+            'section_id' => $section->id,
         ]);
 
         return redirect()->route('grades.index', ['section' => $section->id])->with('success', 'Grade record created successfully.');
@@ -117,6 +138,11 @@ class GradeController extends Controller
             'remarks' => $validated['remarks'],
         ]);
 
+        $this->notifyStudent($student, 'Grade updated', "{$grade->title}: {$grade->score}/{$grade->max_score}", 'grade', [
+            'grade_id' => $grade->id,
+            'section_id' => $section->id,
+        ]);
+
         return redirect()->route('grades.index', ['section' => $section->id, 'grade' => $grade->id])->with('success', 'Grade record updated successfully.');
     }
 
@@ -133,5 +159,20 @@ class GradeController extends Controller
     private function ensureTeacherOwnsGrade(Request $request, Grade $grade): void
     {
         abort_unless($grade->section && $grade->section->teacher_id === $request->user()->id, 403);
+    }
+
+    private function notifyStudent(StudentProfile $student, string $title, string $message, string $type, array $data): void
+    {
+        if (! $student->user) {
+            return;
+        }
+
+        AppNotification::create([
+            'user_id' => $student->user->id,
+            'title' => $title,
+            'message' => $message,
+            'type' => $type,
+            'data' => $data,
+        ]);
     }
 }

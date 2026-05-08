@@ -21,7 +21,7 @@ class AuthController extends Controller
     public function landing(): RedirectResponse|View
     {
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            return redirect()->route(Auth::user()->isAdmin() ? 'admin.index' : 'dashboard');
         }
 
         return view('landing', [
@@ -34,11 +34,13 @@ class AuthController extends Controller
     public function showLogin(): RedirectResponse|View
     {
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            return redirect()->route(Auth::user()->isAdmin() ? 'admin.index' : 'dashboard');
         }
 
         return view('auth.login', [
             'databaseReady' => $this->hasTable('users'),
+            'demoAccounts' => $this->demoAccounts(),
+            'demoPassword' => self::DEMO_PASSWORD,
         ]);
     }
 
@@ -63,13 +65,17 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
+        if ($request->user()->isAdmin()) {
+            return redirect()->route('admin.index')->with('success', 'Login successful. Admin tools are ready.');
+        }
+
         return redirect()->route('dashboard')->with('success', 'Login successful. Your e-class dashboard is ready.');
     }
 
     public function showRegister(): RedirectResponse|View
     {
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            return redirect()->route(Auth::user()->isAdmin() ? 'admin.index' : 'dashboard');
         }
 
         $hasUsersTable = $this->hasTable('users');
@@ -179,8 +185,8 @@ class AuthController extends Controller
 
         return User::query()
             ->with('studentProfile.section')
-            ->whereIn('role', [User::ROLE_TEACHER, User::ROLE_STUDENT])
-            ->orderByRaw('CASE WHEN role = ? THEN 0 ELSE 1 END', [User::ROLE_TEACHER])
+            ->whereIn('role', [User::ROLE_ADMIN, User::ROLE_TEACHER, User::ROLE_STUDENT])
+            ->orderByRaw('CASE WHEN role = ? THEN 0 WHEN role = ? THEN 1 ELSE 2 END', [User::ROLE_ADMIN, User::ROLE_TEACHER])
             ->orderBy('name')
             ->get()
             ->map(function (User $user): array {

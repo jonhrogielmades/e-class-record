@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Announcement;
+use App\Models\AppNotification;
+use App\Models\Assignment;
 use App\Models\AttendanceRecord;
 use App\Models\Grade;
 use App\Models\Section;
@@ -17,6 +20,9 @@ class EClassDemoSeeder extends Seeder
     {
         DB::transaction(function () {
             Grade::query()->delete();
+            AppNotification::query()->delete();
+            Assignment::query()->delete();
+            Announcement::query()->delete();
             AttendanceRecord::query()->delete();
             StudentProfile::query()->delete();
             Section::query()->delete();
@@ -30,6 +36,16 @@ class EClassDemoSeeder extends Seeder
                 'phone' => '+63 917 555 2000',
                 'title' => 'Class Adviser',
                 'department' => 'BSIT Program',
+            ]);
+
+            User::query()->create([
+                'name' => 'System Administrator',
+                'email' => 'admin@eclass.local',
+                'password' => Hash::make('password123'),
+                'role' => User::ROLE_ADMIN,
+                'phone' => '+63 917 555 9000',
+                'title' => 'System Admin',
+                'department' => 'Registrar Office',
             ]);
 
             $sectionA = Section::query()->create([
@@ -127,6 +143,41 @@ class EClassDemoSeeder extends Seeder
                 'max_score' => 20,
                 'remarks' => 'Good performance.',
                 'recorded_at' => $recordedAt,
+            ]);
+
+            $announcement = Announcement::query()->create([
+                'section_id' => $sectionA->id,
+                'created_by' => $teacher->id,
+                'title' => 'Bring your project outline',
+                'body' => 'Prepare a one-page outline for the next application development consultation.',
+                'published_at' => now(),
+            ]);
+
+            $assignment = Assignment::query()->create([
+                'section_id' => $sectionA->id,
+                'teacher_id' => $teacher->id,
+                'title' => 'Database Schema Draft',
+                'category' => 'Project',
+                'due_date' => now()->addWeek()->toDateString(),
+                'max_score' => 50,
+                'status' => 'Assigned',
+                'instructions' => 'Submit an ERD and table list for the class record module.',
+            ]);
+
+            AppNotification::query()->create([
+                'user_id' => $airaUser->id,
+                'title' => 'New announcement',
+                'message' => $announcement->title,
+                'type' => 'announcement',
+                'data' => ['announcement_id' => $announcement->id, 'section_id' => $sectionA->id],
+            ]);
+
+            AppNotification::query()->create([
+                'user_id' => $airaUser->id,
+                'title' => 'New assignment',
+                'message' => $assignment->title,
+                'type' => 'assignment',
+                'data' => ['assignment_id' => $assignment->id, 'section_id' => $sectionA->id],
             ]);
 
             Grade::query()->create([

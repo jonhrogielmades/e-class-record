@@ -29,7 +29,7 @@ class SettingsController extends Controller
     {
         $user = $request->user();
 
-        if ($user->isTeacher()) {
+        if ($user->isTeacher() || $user->isAdmin()) {
             $validated = $request->validate([
                 'name' => ['required', 'string', 'max:255'],
                 'department' => ['nullable', 'string', 'max:255'],
