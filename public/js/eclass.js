@@ -332,6 +332,53 @@
         });
     }
 
+    let confirmFormTarget = null;
+
+    window.closeConfirmModal = function () {
+        confirmFormTarget = null;
+        const modal = document.getElementById('global-confirm-modal');
+        if (modal) modal.style.display = 'none';
+    };
+
+    function openConfirmModal(message, formElement) {
+        confirmFormTarget = formElement;
+        const modal = document.getElementById('global-confirm-modal');
+        const msgEl = document.getElementById('confirm-modal-message');
+        if (modal && msgEl) {
+            msgEl.innerText = message || 'Are you sure you want to proceed?';
+            modal.style.display = 'flex';
+        }
+    }
+
+    function bindConfirmModal() {
+        const confirmBtn = document.getElementById('confirm-modal-submit');
+        if (!confirmBtn) return;
+
+        confirmBtn.addEventListener('click', function () {
+            if (confirmFormTarget) {
+                confirmFormTarget.submit();
+            }
+        });
+
+        document.querySelectorAll('form').forEach(function (form) {
+            const submitBtns = form.querySelectorAll('button[type="submit"], input[type="submit"]');
+            submitBtns.forEach(function (btn) {
+                const onclickAttr = btn.getAttribute('onclick');
+                if (onclickAttr && onclickAttr.indexOf('return confirm') > -1) {
+                    const match = onclickAttr.match(/confirm\(['"](.*?)['"]\)/);
+                    const message = match ? match[1] : 'Are you sure you want to proceed?';
+                    
+                    btn.removeAttribute('onclick');
+                    
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        openConfirmModal(message, form);
+                    });
+                }
+            });
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         applyTheme(getTheme());
         bindThemeToggles();
@@ -342,6 +389,7 @@
         bindAutoSubmit();
         setCurrentYear();
         bindCharts();
+        bindConfirmModal();
     });
 
     window.addEventListener('resize', function () {

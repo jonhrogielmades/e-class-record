@@ -30,4 +30,12 @@ class NotificationController extends Controller
 
         return back()->with('success', 'Notifications marked as read.');
     }
+
+    public function toggleRead(Request $request, $id): RedirectResponse
+    {
+        $notification = $request->user()->notifications()->findOrFail($id);
+        $notification->update(['read_at' => $notification->read_at ? null : now()]);
+
+        return back();
+    }
 }

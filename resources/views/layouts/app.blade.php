@@ -5,37 +5,37 @@
     $pageTitle = trim($__env->yieldContent('page_title', 'Dashboard'));
     $pageSubtitle = trim($__env->yieldContent('page_subtitle', ''));
     $unreadNotificationCount = $user->notifications()->unread()->count();
-    $navigation = $user->isAdmin()
+    $coreNavigation = $user->isAdmin()
         ? [
             ['key' => 'admin', 'label' => 'Admin Panel', 'route' => 'admin.index'],
-            ['key' => 'notifications', 'label' => 'Notifications', 'route' => 'notifications.index'],
-            ['key' => 'settings', 'label' => 'Settings', 'route' => 'settings.index'],
         ]
         : ($user->isTeacher()
         ? [
             ['key' => 'dashboard', 'label' => 'Dashboard', 'route' => 'dashboard'],
-            ['key' => 'analytics', 'label' => 'Analytics', 'route' => 'analytics.index'],
             ['key' => 'class-list', 'label' => 'Class List', 'route' => 'sections.index'],
             ['key' => 'students', 'label' => 'Students', 'route' => 'students.index'],
             ['key' => 'grading', 'label' => 'Grading', 'route' => 'grades.index'],
-            ['key' => 'calendar', 'label' => 'Calendar', 'route' => 'attendance.calendar'],
-            ['key' => 'announcements', 'label' => 'Announcements', 'route' => 'announcements.index'],
-            ['key' => 'assignments', 'label' => 'Assignments', 'route' => 'assignments.index'],
+        ]
+        : [
+            ['key' => 'dashboard', 'label' => 'Dashboard', 'route' => 'dashboard'],
+            ['key' => 'class-list', 'label' => 'My Class', 'route' => 'sections.index'],
+            ['key' => 'students', 'label' => 'My Records', 'route' => 'students.index'],
+            ['key' => 'grading', 'label' => 'Grades', 'route' => 'grades.index'],
+        ]);
+
+    $additionalNavigation = $user->isAdmin()
+        ? [
             ['key' => 'notifications', 'label' => 'Notifications', 'route' => 'notifications.index'],
             ['key' => 'settings', 'label' => 'Settings', 'route' => 'settings.index'],
         ]
         : [
-            ['key' => 'dashboard', 'label' => 'Dashboard', 'route' => 'dashboard'],
             ['key' => 'analytics', 'label' => 'Analytics', 'route' => 'analytics.index'],
-            ['key' => 'class-list', 'label' => 'My Class', 'route' => 'sections.index'],
-            ['key' => 'students', 'label' => 'My Records', 'route' => 'students.index'],
-            ['key' => 'grading', 'label' => 'Grades', 'route' => 'grades.index'],
             ['key' => 'calendar', 'label' => 'Calendar', 'route' => 'attendance.calendar'],
             ['key' => 'announcements', 'label' => 'Announcements', 'route' => 'announcements.index'],
             ['key' => 'assignments', 'label' => 'Assignments', 'route' => 'assignments.index'],
             ['key' => 'notifications', 'label' => 'Notifications', 'route' => 'notifications.index'],
             ['key' => 'settings', 'label' => 'Settings', 'route' => 'settings.index'],
-        ]);
+        ];
     $navIcons = [
         'admin' => '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l7 4v6c0 5-3 8-7 10-4-2-7-5-7-10V6l7-4z"></path><path d="M9 12l2 2 4-4"></path></svg>',
         'dashboard' => '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>',
@@ -63,6 +63,12 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/laravel-bridge.css') }}">
     @stack('styles')
+    <script>
+        (function() {
+            var theme = window.localStorage.getItem('eclass_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </head>
 <body data-page="{{ $activePage }}">
     <div class="background"></div>
@@ -75,9 +81,23 @@
             </div>
             <ul class="nav-menu">
                 <li class="nav-section">
-                    <span class="nav-section-title">Navigation</span>
+                    <span class="nav-section-title">Core Modules</span>
                     <ul>
-                        @foreach ($navigation as $item)
+                        @foreach ($coreNavigation as $item)
+                            <li class="nav-item">
+                                <a href="{{ route($item['route']) }}" class="nav-link {{ $activePage === $item['key'] ? 'active' : '' }}">
+                                    {!! $navIcons[$item['key']] !!}
+                                    {{ $item['label'] }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </li>
+                @if (count($additionalNavigation) > 0)
+                <li class="nav-section" style="margin-top: 24px;">
+                    <span class="nav-section-title">Additional Features</span>
+                    <ul>
+                        @foreach ($additionalNavigation as $item)
                             <li class="nav-item">
                                 <a href="{{ route($item['route']) }}" class="nav-link {{ $activePage === $item['key'] ? 'active' : '' }}">
                                     {!! $navIcons[$item['key']] !!}
@@ -90,6 +110,7 @@
                         @endforeach
                     </ul>
                 </li>
+                @endif
             </ul>
             <div class="sidebar-footer">
                 <div class="user-profile">
@@ -99,6 +120,10 @@
                         <div class="user-role">{{ EClassUi::roleLabel($user->role) }}</div>
                     </div>
                 </div>
+                <form method="POST" action="{{ route('logout') }}" style="margin-top: 15px;">
+                    @csrf
+                    <button type="submit" class="btn btn-outline btn-xs" style="width: 100%;">Log Out</button>
+                </form>
             </div>
         </aside>
 
@@ -154,6 +179,8 @@
             </footer>
         </main>
     </div>
+
+    @include('partials.confirm-modal')
 
     <script src="{{ asset('js/eclass.js') }}"></script>
     @stack('scripts')

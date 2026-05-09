@@ -17,35 +17,37 @@
 @endsection
 
 @section('content')
-    <section class="glass-card">
-        <div class="section-head"><div><h2>Grade Report</h2><p>Excel-compatible rows for recorded assessments.</p></div></div>
-        <div class="table-responsive">
-            <table class="history-table">
-                <thead><tr><th>Date</th><th>Section</th><th>Student</th><th>Assessment</th><th>Score</th><th>Percent</th></tr></thead>
-                <tbody>
-                    @forelse ($grades as $row)
-                        <tr><td>{{ $row['date'] }}</td><td>{{ $row['section'] }}</td><td>{{ $row['student'] }}</td><td>{{ $row['assessment'] }}</td><td>{{ $row['score'] }} / {{ $row['max_score'] }}</td><td>{{ $row['percent'] }}%</td></tr>
-                    @empty
-                        <tr><td colspan="6">No grade records found.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </section>
+    <div class="stack-grid">
+        <section class="glass-card">
+            <div class="section-head"><div><h2>Grade Report</h2><p>Excel-compatible rows for recorded assessments.</p></div></div>
+            <div class="table-responsive">
+                <table class="history-table">
+                    <thead><tr><th>Date</th><th>Section</th><th>Student</th><th>Assessment</th><th>Score</th><th>Percent</th></tr></thead>
+                    <tbody>
+                        @forelse ($grades as $row)
+                            <tr><td>{{ $row['date'] }}</td><td>{{ $row['section'] }}</td><td>{{ $row['student'] }}</td><td>{{ $row['assessment'] }}</td><td>{{ $row['score'] }} / {{ $row['max_score'] }}</td><td>{{ $row['percent'] }}%</td></tr>
+                        @empty
+                            <tr><td colspan="6">No grade records found.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-    <section class="glass-card">
-        <div class="section-head"><div><h2>Attendance Report</h2><p>Attendance records grouped into a printable table.</p></div></div>
-        <div class="table-responsive">
-            <table class="history-table">
-                <thead><tr><th>Date</th><th>Section</th><th>Student</th><th>Topic</th><th>Status</th><th>Remarks</th></tr></thead>
-                <tbody>
-                    @forelse ($attendanceRecords as $row)
-                        <tr><td>{{ $row['date'] }}</td><td>{{ $row['section'] }}</td><td>{{ $row['student'] }}</td><td>{{ $row['topic'] }}</td><td>{{ $row['status'] }}</td><td>{{ $row['remarks'] }}</td></tr>
-                    @empty
-                        <tr><td colspan="6">No attendance records found.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </section>
+        <section class="glass-card">
+            <div class="section-head"><div><h2>Attendance Report</h2><p>Attendance records grouped into a printable table.</p></div></div>
+            <div class="table-responsive">
+                <table class="history-table">
+                    <thead><tr><th>Date</th><th>Section</th><th>Student</th><th>Topic</th><th>Status</th><th>Remarks</th></tr></thead>
+                    <tbody>
+                        @forelse ($attendanceRecords as $row)
+                            <tr><td>{{ $row['date'] }}</td><td>{{ $row['section'] }}</td><td>{{ $row['student'] }}</td><td>{{ $row['topic'] }}</td><td>{{ $row['status'] }}</td><td>{{ $row['remarks'] }}</td></tr>
+                        @empty
+                            <tr><td colspan="6">No attendance records found.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
 @endsection

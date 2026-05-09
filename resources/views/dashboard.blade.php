@@ -33,11 +33,11 @@
     @if ($user->isTeacher())
         @if ($teacherSnapshot['sections']->isEmpty())
             <section class="glass-card">
-                <div class="empty-state">
+                <div class="empty-state" style="text-align: center; padding: 3rem 1rem;">
                     <div>
-                        <h3>No sections are available yet</h3>
-                        <p>The teacher dashboard needs at least one section before it can show attendance and grading summaries.</p>
-                        <div class="button-row no-print">
+                        <h3 style="margin-bottom: 0.5rem;">No sections are available yet</h3>
+                        <p style="margin-bottom: 1.5rem;">The teacher dashboard needs at least one section before it can show attendance and grading summaries.</p>
+                        <div class="button-row no-print" style="justify-content: center;">
                             <a href="{{ route('sections.index') }}" class="btn btn-primary btn-fit">Go to Class List</a>
                         </div>
                     </div>

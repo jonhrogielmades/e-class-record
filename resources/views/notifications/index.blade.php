@@ -26,7 +26,12 @@
                     <p>{{ $notification->message }}</p>
                     <div class="recent-session-meta">
                         <span class="feature-badge">{{ $notification->created_at->format('M j, Y g:i A') }}</span>
-                        <span class="feature-badge">{{ $notification->read_at ? 'Read' : 'Unread' }}</span>
+                        <form method="POST" action="{{ route('notifications.toggleRead', $notification->id) }}" style="display: inline;">
+                            @csrf
+                            <button type="submit" class="feature-badge" style="background: transparent; border: 1px solid var(--glass-border); cursor: pointer;">
+                                {{ $notification->read_at ? 'Read' : 'Unread' }}
+                            </button>
+                        </form>
                     </div>
                 </article>
             @empty

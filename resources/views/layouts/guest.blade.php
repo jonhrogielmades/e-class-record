@@ -12,6 +12,12 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/laravel-bridge.css') }}">
     @stack('styles')
+    <script>
+        (function() {
+            var theme = window.localStorage.getItem('eclass_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </head>
 <body data-page="@yield('page_name', 'guest')">
     <div class="background"></div>

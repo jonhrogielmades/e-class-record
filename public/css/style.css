@@ -475,8 +475,17 @@ body {
 }
 
 @keyframes wavePulse {
-    0%, 100% { height: 20%; opacity: 0.55; }
-    50% { height: 100%; opacity: 1; }
+
+    0%,
+    100% {
+        height: 20%;
+        opacity: 0.55;
+    }
+
+    50% {
+        height: 100%;
+        opacity: 1;
+    }
 }
 
 .section-stack {
@@ -719,6 +728,7 @@ body {
     color: inherit;
     font-family: "Space Mono", monospace;
 }
+
 select.form-input {
     color: var(--text-primary);
     background-color: var(--glass-bg);
@@ -740,6 +750,7 @@ select.form-input option:disabled {
     background-color: #ffffff;
     color: #0f172a;
 }
+
 [data-theme="light"] select.form-input {
     color-scheme: light;
 }
@@ -748,7 +759,7 @@ select.form-input option:disabled {
     margin-bottom: 24px;
 }
 
-.section-filter-block + .section-grid {
+.section-filter-block+.section-grid {
     margin-top: 24px;
 }
 
@@ -795,7 +806,7 @@ select.form-input option:disabled {
     margin-bottom: 24px;
 }
 
-.hero-panel > div:first-child {
+.hero-panel>div:first-child {
     max-width: 68ch;
 }
 
@@ -1331,9 +1342,9 @@ select.form-input option:disabled {
     border: 1px solid var(--glass-border);
 }
 
-.goal-card + .goal-card,
-.coach-card + .goal-card,
-.goal-card + .coach-card {
+.goal-card+.goal-card,
+.coach-card+.goal-card,
+.goal-card+.coach-card {
     margin-top: 14px;
 }
 
@@ -1510,6 +1521,7 @@ select.form-input option:disabled {
 ============================================ */
 
 @media (max-width: 1200px) {
+
     .landing-hero,
     .auth-grid,
     .profile-grid,
@@ -1560,6 +1572,7 @@ select.form-input option:disabled {
 }
 
 @media (max-width: 768px) {
+
     .public-shell,
     .auth-shell {
         width: min(100%, calc(100% - 24px));
@@ -1600,6 +1613,7 @@ select.form-input option:disabled {
 }
 
 @media (max-width: 560px) {
+
     .button-row,
     .hero-actions,
     .counter-row,
@@ -1807,6 +1821,7 @@ select.form-input option:disabled {
 }
 
 @media (max-width: 768px) {
+
     .role-card-grid,
     .site-map-grid {
         grid-template-columns: 1fr;
@@ -1867,9 +1882,9 @@ select.form-input option:disabled {
     --text-secondary: rgba(250, 250, 250, 0.74);
     --text-muted: rgba(250, 250, 250, 0.52);
     --glass-bg: #202124;
-    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-border: rgba(255, 255, 255, 0.16);
     --glass-shadow: rgba(0, 0, 0, 0.28);
-    --glass-hover: #26272b;
+    --glass-hover: #2a2b2f;
     --surface-strong: #26272b;
     --surface-soft: rgba(255, 255, 255, 0.07);
     --surface-muted: rgba(255, 255, 255, 0.04);
@@ -1936,11 +1951,13 @@ body {
 .login-card {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
+    border-top: 3px solid var(--emerald);
     box-shadow: var(--shadow-soft);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     transform-style: flat;
     perspective: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
 }
 
 .glass-card::before,
@@ -1950,9 +1967,10 @@ body {
 
 .glass-card:hover,
 .login-card:hover {
-    background: var(--glass-bg);
-    border-color: var(--border-strong);
-    box-shadow: var(--shadow-soft);
+    background: var(--glass-hover);
+    border-color: var(--emerald);
+    box-shadow: 0 16px 32px var(--glass-shadow);
+    transform: translateY(-3px);
 }
 
 .glass-card-3d,
@@ -2197,17 +2215,24 @@ body {
 
 .section-grid,
 .stack-grid {
-    gap: 20px;
+    gap: 32px;
 }
 
 .section-head {
-    margin-bottom: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .section-head h2,
 .section-head h3 {
-    font-size: 19px;
+    font-size: 20px;
     font-weight: 700;
+}
+
+.section-filter-block {
+    background: var(--surface-soft);
+    border-top: 3px solid var(--slate);
 }
 
 .action-card,
@@ -2489,7 +2514,7 @@ select.form-input optgroup {
     margin-top: 18px;
 }
 
-.pagination-wrap nav > div {
+.pagination-wrap nav>div {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -2507,4 +2532,3 @@ select.form-input optgroup {
         grid-template-columns: repeat(7, minmax(96px, 1fr));
     }
 }
-

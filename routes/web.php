@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/assignments', [AssignmentController::class, 'index'])->name('assignments.index');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.readAll');
+    Route::post('/notifications/{id}/toggle-read', [NotificationController::class, 'toggleRead'])->name('notifications.toggleRead');
     Route::get('/reports/grades.csv', [ReportController::class, 'gradesCsv'])->name('reports.gradesCsv');
     Route::get('/reports/attendance.csv', [ReportController::class, 'attendanceCsv'])->name('reports.attendanceCsv');
     Route::get('/reports/print', [ReportController::class, 'print'])->name('reports.print');
