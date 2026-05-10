@@ -24,11 +24,11 @@
                     <span class="status-pill">{{ ucfirst($notification->type) }}</span>
                     <h3>{{ $notification->title }}</h3>
                     <p>{{ $notification->message }}</p>
-                    <div class="recent-session-meta">
+                    <div class="recent-session-meta" style="align-items: center; justify-content: space-between;">
                         <span class="feature-badge">{{ $notification->created_at->format('M j, Y g:i A') }}</span>
-                        <form method="POST" action="{{ route('notifications.toggleRead', $notification->id) }}" style="display: inline;">
+                        <form method="POST" action="{{ route('notifications.toggleRead', $notification->id) }}" style="margin: 0;">
                             @csrf
-                            <button type="submit" class="feature-badge" style="background: transparent; border: 1px solid var(--glass-border); cursor: pointer;">
+                            <button type="submit" class="btn btn-outline btn-xs">
                                 {{ $notification->read_at ? 'Read' : 'Unread' }}
                             </button>
                         </form>

@@ -366,7 +366,7 @@ input:-webkit-autofill:active {
 
 .nav-badge {
     margin-left: auto;
-    background: linear-gradient(135deg, var(--gold), var(--amber));
+    background: linear-gradient(135deg, var(--emerald-light), var(--emerald));
     color: white;
     font-size: 11px;
     font-weight: 600;
